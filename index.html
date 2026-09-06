@@ -13,9 +13,12 @@
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <div>
-        <div class="eyebrow">مساعد الصيدلية</div>
-        <h1>Pharma Finder</h1>
+      <div class="logo-section">
+        <div class="logo-icon">💊</div>
+        <div>
+          <h1>Pharma Finder</h1>
+          <div class="eyebrow">مساعد الصيدلية الذكي</div>
+        </div>
       </div>
       <div class="header-buttons">
         <button id="addMedicineBtn" class="icon-btn add-btn" aria-label="إضافة دواء جديد" title="إضافة دواء">+</button>
@@ -26,15 +29,18 @@
       <!-- Modal إعدادات الشيت -->
       <div id="settingsModal" class="modal" hidden>
         <div class="modal-overlay"></div>
-        <div class="modal-content">
+        <div class="modal-content premium-modal">
           <div class="modal-header">
-            <h2>إعدادات جوجل شيتس</h2>
+            <h2>⚙️ إعدادات جوجل شيتس</h2>
             <button id="closeSettingsBtn" class="close-btn" aria-label="إغلاق">&times;</button>
           </div>
-          <div style="padding: 10px;">
-            <input id="sheetUrl" type="text" placeholder="ضع رابط جوجل شيتس هنا" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;margin-bottom:10px;font-size:12px;">
-            <button id="loadSheetBtn" class="primary" style="width:100%;margin-bottom:10px;">تحميل البيانات</button>
-            <div id="sheetStatus" style="font-size:11px;color:#64748b;padding:10px;background:#f8fafc;border-radius:4px;"></div>
+          <div style="padding: 16px;">
+            <div class="settings-group">
+              <label style="display:block;margin-bottom:6px;font-size:12px;color:#64748b;font-weight:600;">رابط جوجل شيتس</label>
+              <input id="sheetUrl" type="text" placeholder="https://docs.google.com/spreadsheets/d/..." style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:8px;margin-bottom:12px;font-size:12px;transition:border-color 0.3s;">
+              <button id="loadSheetBtn" class="primary premium-btn" style="width:100%;margin-bottom:12px;">📥 تحميل البيانات</button>
+              <div id="sheetStatus" style="font-size:12px;color:#64748b;padding:12px;background:linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);border-radius:8px;border-left:4px solid #0f172a;"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -42,75 +48,91 @@
       <!-- Modal إضافة دواء -->
       <div id="medicineModal" class="modal" hidden>
         <div class="modal-overlay"></div>
-        <div class="modal-content">
+        <div class="modal-content premium-modal">
           <div class="modal-header">
-            <h2>إضافة دواء جديد</h2>
+            <h2>➕ إضافة دواء جديد</h2>
             <button id="closeModalBtn" class="close-btn" aria-label="إغلاق">&times;</button>
           </div>
           <form id="medicineForm" class="form-grid">
             <input name="name" required placeholder="الاسم التجاري">
             <input name="ingredient" required placeholder="المادة الفعالة">
             <input name="strength" placeholder="التركيز — مثال 500 mg">
-            <input name="form" placeholder="الشكل الصيدلي (أقراص، كبسولات، شراب...)">
+            <input name="form" placeholder="الشكل الصيدلي (أقراص، كبسولات...)">
             <input name="manufacturer" placeholder="الشركة المصنعة">
             <input name="appearance" placeholder="وصف الشكل واللون والعبوة">
             <textarea name="notes" placeholder="ملاحظات إضافية"></textarea>
             <div class="modal-actions">
-              <button class="primary" type="submit">إضافة إلى قاعدة البيانات</button>
+              <button class="primary premium-btn" type="submit">✓ إضافة الدواء</button>
               <button type="button" id="cancelModalBtn" class="ghost">إلغاء</button>
             </div>
           </form>
         </div>
       </div>
 
-      <section class="hero card">
-        <span class="badge">نسخة MVP مجانية</span>
-        <h2>ابحث عن الدواء بسرعة</h2>
-        <p>اكتب اسم الدواء أو وصف شكله أو المادة الفعالة، ثم راجع النتائج قبل الصرف.</p>
-        <div class="search-row">
-          <input id="searchInput" type="search" placeholder="مثال: شريط أبيض، كبسولة زرقاء..." autocomplete="off">
-          <button id="searchBtn" class="primary">بحث</button>
-        </div>
-        <div style="display:flex;gap:4px;margin-bottom:10px;">
-          <button id="settingsBtn" class="ghost" style="font-size:11px;flex:1;">⚙️ إعدادات الشيت</button>
-        </div>
-        <div class="quick-tags">
-          <button class="tag" data-query="باراسيتامول">باراسيتامول</button>
-          <button class="tag" data-query="كبسولة زرقاء">كبسولة زرقاء</button>
-          <button class="tag" data-query="ضغط">ضغط</button>
-          <button class="tag" data-query="شريط أبيض">شريط أبيض</button>
+      <section class="hero card premium-card">
+        <div class="hero-content">
+          <span class="badge premium-badge">نسخة MVP مجانية</span>
+          <h2>ابحث عن الدواء بسرعة ودقة</h2>
+          <p>اكتب اسم الدواء أو وصف شكله أو المادة الفعالة، ثم راجع النتائج قبل الصرف</p>
+          
+          <div class="search-container">
+            <div class="search-row">
+              <input id="searchInput" type="search" placeholder="مثال: باراسيتامول، شريط أبيض..." autocomplete="off" class="search-input">
+              <button id="searchBtn" class="primary premium-btn">🔍 بحث</button>
+            </div>
+          </div>
+
+          <div class="controls-row">
+            <button id="settingsBtn" class="ghost control-btn">⚙️ الإعدادات</button>
+          </div>
+
+          <div class="quick-tags">
+            <button class="tag" data-query="باراسيتامول">باراسيتامول</button>
+            <button class="tag" data-query="كبسولة زرقاء">كبسولة زرقاء</button>
+            <button class="tag" data-query="ضغط">ضغط</button>
+            <button class="tag" data-query="شريط أبيض">شريط أبيض</button>
+          </div>
         </div>
       </section>
 
-      <section class="card warning">
-        <strong>تنبيه مهني</strong>
+      <section class="card warning premium-warning">
+        <strong>⚠️ تنبيه مهني</strong>
         <p>المظهر أو الوصف وحده لا يؤكد هوية الدواء. يجب مطابقة الاسم والمادة الفعالة والتركيز والشكل الصيدلي والعبوة والشركة المصنعة. استشر مصادر موثوقة.</p>
       </section>
 
-      <section class="stats">
-        <div class="stat card"><strong id="medicineCount">0</strong><span>دواء</span></div>
-        <div class="stat card"><strong id="resultCount">0</strong><span>نتائج</span></div>
-        <div class="stat card"><strong id="recentCount">0</strong><span>بحث</span></div>
+      <section class="stats premium-stats">
+        <div class="stat card premium-stat-card">
+          <div class="stat-number" id="medicineCount">0</div>
+          <div class="stat-label">دواء في قاعدة البيانات</div>
+        </div>
+        <div class="stat card premium-stat-card">
+          <div class="stat-number" id="resultCount">0</div>
+          <div class="stat-label">نتائج البحث</div>
+        </div>
+        <div class="stat card premium-stat-card">
+          <div class="stat-number" id="recentCount">0</div>
+          <div class="stat-label">عمليات بحث</div>
+        </div>
       </section>
 
-      <section class="card">
+      <section class="card premium-card">
         <div class="section-head">
-          <h2>النتائج</h2>
+          <h2>📋 نتائج البحث</h2>
           <button id="clearBtn" class="ghost">مسح</button>
         </div>
         <div id="results" class="results"></div>
       </section>
 
-      <section class="card">
+      <section class="card premium-card">
         <div class="section-head">
-          <h2>آخر عمليات البحث</h2>
+          <h2>⏱️ آخر عمليات البحث</h2>
           <button id="clearRecentBtn" class="ghost">مسح السجل</button>
         </div>
         <div id="recentSearches" class="recent"></div>
       </section>
     </main>
 
-    <footer>
+    <footer class="premium-footer">
       <p>Pharma Finder • مشروع تجريبي تعليمي • لا يعتمد على خدمات مدفوعة</p>
     </footer>
   </div>
