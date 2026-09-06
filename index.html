@@ -17,7 +17,10 @@
         <div class="eyebrow">مساعد الصيدلية</div>
         <h1>Pharma Finder</h1>
       </div>
-      <button id="installBtn" class="icon-btn" hidden aria-label="تثبيت التطبيق">＋</button>
+      <div class="header-buttons">
+        <button id="addMedicineBtn" class="icon-btn add-btn" aria-label="إضافة دواء جديد" title="إضافة دواء">+</button>
+        <button id="installBtn" class="icon-btn" hidden aria-label="تثبيت التطبيق">↓</button>
+      </div>
     </header>
 
     <main>
@@ -39,7 +42,7 @@
 
       <section class="card warning">
         <strong>تنبيه مهني</strong>
-        <p>المظهر أو الوصف وحده لا يؤكد هوية الدواء. يجب مطابقة الاسم والمادة الفعالة والتركيز والشكل الصيدلي والعبوة قبل الصرف.</p>
+        <p>المظهر أو الوصف وحده لا يؤكد هوية الدواء. يجب مطابقة الاسم والمادة الفعالة والتركيز والشكل الصيدلي والعبوة والشركة المصنعة. استشر مصادر موثوقة.</p>
       </section>
 
       <section class="stats">
@@ -58,30 +61,6 @@
 
       <section class="card">
         <div class="section-head">
-          <h2>إضافة دواء</h2>
-          <span class="small">يحفظ محليًا على هذا الجهاز</span>
-        </div>
-        <form id="medicineForm" class="form-grid">
-          <input name="name" required placeholder="الاسم التجاري">
-          <input name="ingredient" required placeholder="المادة الفعالة">
-          <input name="strength" placeholder="التركيز — مثال 500 mg">
-          <select name="form">
-            <option>أقراص</option>
-            <option>كبسولات</option>
-            <option>شراب</option>
-            <option>أمبول</option>
-            <option>كريم</option>
-            <option>أخرى</option>
-          </select>
-          <input name="manufacturer" placeholder="الشركة المصنعة">
-          <input name="appearance" placeholder="وصف الشكل واللون والعبوة">
-          <textarea name="notes" placeholder="ملاحظات إضافية"></textarea>
-          <button class="primary" type="submit">إضافة إلى قاعدة البيانات المحلية</button>
-        </form>
-      </section>
-
-      <section class="card">
-        <div class="section-head">
           <h2>آخر عمليات البحث</h2>
           <button id="clearRecentBtn" class="ghost">مسح السجل</button>
         </div>
@@ -93,6 +72,38 @@
       <p>Pharma Finder • مشروع تجريبي تعليمي • لا يعتمد على خدمات مدفوعة</p>
     </footer>
   </div>
+
+  <!-- Modal لإضافة دواء جديد -->
+  <div id="medicineModal" class="modal" hidden>
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>إضافة دواء جديد</h2>
+        <button id="closeModalBtn" class="close-btn" aria-label="إغلاق">&times;</button>
+      </div>
+      <form id="medicineForm" class="form-grid">
+        <input name="name" required placeholder="الاسم التجاري">
+        <input name="ingredient" required placeholder="المادة الفعالة">
+        <input name="strength" placeholder="التركيز — مثال 500 mg">
+        <select name="form">
+          <option>أقراص</option>
+          <option>كبسولات</option>
+          <option>شراب</option>
+          <option>أمبول</option>
+          <option>كريم</option>
+          <option>أخرى</option>
+        </select>
+        <input name="manufacturer" placeholder="الشركة المصنعة">
+        <input name="appearance" placeholder="وصف الشكل واللون والعبوة">
+        <textarea name="notes" placeholder="ملاحظات إضافية"></textarea>
+        <div class="modal-actions">
+          <button class="primary" type="submit">إضافة إلى قاعدة البيانات</button>
+          <button type="button" id="cancelModalBtn" class="ghost">إلغاء</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
