@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Pharma Finder - مساعد بحث الأدوية للصيدلية">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <title>Pharma Finder</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">مساعد الصيدلية</div>
+        <h1>Pharma Finder</h1>
+      </div>
+      <button id="installBtn" class="icon-btn" hidden aria-label="تثبيت التطبيق">＋</button>
+    </header>
+
+    <main>
+      <section class="hero card">
+        <span class="badge">نسخة MVP مجانية</span>
+        <h2>ابحث عن الدواء بسرعة</h2>
+        <p>اكتب اسم الدواء أو وصف شكله أو المادة الفعالة، ثم راجع النتائج قبل الصرف.</p>
+        <div class="search-row">
+          <input id="searchInput" type="search" placeholder="مثال: شريط أبيض، كبسولة زرقاء..." autocomplete="off">
+          <button id="searchBtn" class="primary">بحث</button>
+        </div>
+        <div class="quick-tags">
+          <button class="tag" data-query="باراسيتامول">باراسيتامول</button>
+          <button class="tag" data-query="كبسولة زرقاء">كبسولة زرقاء</button>
+          <button class="tag" data-query="ضغط">ضغط</button>
+          <button class="tag" data-query="شريط أبيض">شريط أبيض</button>
+        </div>
+      </section>
+
+      <section class="card warning">
+        <strong>تنبيه مهني</strong>
+        <p>المظهر أو الوصف وحده لا يؤكد هوية الدواء. يجب مطابقة الاسم والمادة الفعالة والتركيز والشكل الصيدلي والعبوة قبل الصرف.</p>
+      </section>
+
+      <section class="stats">
+        <div class="stat card"><strong id="medicineCount">0</strong><span>دواء تجريبي</span></div>
+        <div class="stat card"><strong id="resultCount">0</strong><span>نتائج حالية</span></div>
+        <div class="stat card"><strong id="recentCount">0</strong><span>عمليات بحث</span></div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <h2>النتائج</h2>
+          <button id="clearBtn" class="ghost">مسح</button>
+        </div>
+        <div id="results" class="results"></div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <h2>إضافة دواء</h2>
+          <span class="small">يحفظ محليًا على هذا الجهاز</span>
+        </div>
+        <form id="medicineForm" class="form-grid">
+          <input name="name" required placeholder="الاسم التجاري">
+          <input name="ingredient" required placeholder="المادة الفعالة">
+          <input name="strength" placeholder="التركيز — مثال 500 mg">
+          <select name="form">
+            <option>أقراص</option>
+            <option>كبسولات</option>
+            <option>شراب</option>
+            <option>أمبول</option>
+            <option>كريم</option>
+            <option>أخرى</option>
+          </select>
+          <input name="manufacturer" placeholder="الشركة المصنعة">
+          <input name="appearance" placeholder="وصف الشكل واللون والعبوة">
+          <textarea name="notes" placeholder="ملاحظات إضافية"></textarea>
+          <button class="primary" type="submit">إضافة إلى قاعدة البيانات المحلية</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <h2>آخر عمليات البحث</h2>
+          <button id="clearRecentBtn" class="ghost">مسح السجل</button>
+        </div>
+        <div id="recentSearches" class="recent"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Pharma Finder • مشروع تجريبي تعليمي • لا يعتمد على خدمات مدفوعة</p>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
