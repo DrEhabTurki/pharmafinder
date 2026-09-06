@@ -23,6 +23,46 @@
     </header>
 
     <main>
+      <!-- Modal إعدادات الشيت -->
+      <div id="settingsModal" class="modal" hidden>
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>إعدادات جوجل شيتس</h2>
+            <button id="closeSettingsBtn" class="close-btn" aria-label="إغلاق">&times;</button>
+          </div>
+          <div style="padding: 10px;">
+            <input id="sheetUrl" type="text" placeholder="ضع رابط جوجل شيتس هنا" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:4px;margin-bottom:10px;font-size:12px;">
+            <button id="loadSheetBtn" class="primary" style="width:100%;margin-bottom:10px;">تحميل البيانات</button>
+            <div id="sheetStatus" style="font-size:11px;color:#64748b;padding:10px;background:#f8fafc;border-radius:4px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal إضافة دواء -->
+      <div id="medicineModal" class="modal" hidden>
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>إضافة دواء جديد</h2>
+            <button id="closeModalBtn" class="close-btn" aria-label="إغلاق">&times;</button>
+          </div>
+          <form id="medicineForm" class="form-grid">
+            <input name="name" required placeholder="الاسم التجاري">
+            <input name="ingredient" required placeholder="المادة الفعالة">
+            <input name="strength" placeholder="التركيز — مثال 500 mg">
+            <input name="form" placeholder="الشكل الصيدلي (أقراص، كبسولات، شراب...)">
+            <input name="manufacturer" placeholder="الشركة المصنعة">
+            <input name="appearance" placeholder="وصف الشكل واللون والعبوة">
+            <textarea name="notes" placeholder="ملاحظات إضافية"></textarea>
+            <div class="modal-actions">
+              <button class="primary" type="submit">إضافة إلى قاعدة البيانات</button>
+              <button type="button" id="cancelModalBtn" class="ghost">إلغاء</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <section class="hero card">
         <span class="badge">نسخة MVP مجانية</span>
         <h2>ابحث عن الدواء بسرعة</h2>
@@ -30,6 +70,9 @@
         <div class="search-row">
           <input id="searchInput" type="search" placeholder="مثال: شريط أبيض، كبسولة زرقاء..." autocomplete="off">
           <button id="searchBtn" class="primary">بحث</button>
+        </div>
+        <div style="display:flex;gap:4px;margin-bottom:10px;">
+          <button id="settingsBtn" class="ghost" style="font-size:11px;flex:1;">⚙️ إعدادات الشيت</button>
         </div>
         <div class="quick-tags">
           <button class="tag" data-query="باراسيتامول">باراسيتامول</button>
@@ -45,9 +88,9 @@
       </section>
 
       <section class="stats">
-        <div class="stat card"><strong id="medicineCount">0</strong><span>دواء تجريبي</span></div>
-        <div class="stat card"><strong id="resultCount">0</strong><span>نتائج حالية</span></div>
-        <div class="stat card"><strong id="recentCount">0</strong><span>عمليات بحث</span></div>
+        <div class="stat card"><strong id="medicineCount">0</strong><span>دواء</span></div>
+        <div class="stat card"><strong id="resultCount">0</strong><span>نتائج</span></div>
+        <div class="stat card"><strong id="recentCount">0</strong><span>بحث</span></div>
       </section>
 
       <section class="card">
@@ -70,37 +113,6 @@
     <footer>
       <p>Pharma Finder • مشروع تجريبي تعليمي • لا يعتمد على خدمات مدفوعة</p>
     </footer>
-  </div>
-
-  <!-- Modal لإضافة دواء جديد -->
-  <div id="medicineModal" class="modal" hidden>
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>إضافة دواء جديد</h2>
-        <button id="closeModalBtn" class="close-btn" aria-label="إغلاق">&times;</button>
-      </div>
-      <form id="medicineForm" class="form-grid">
-        <input name="name" required placeholder="الاسم التجاري">
-        <input name="ingredient" required placeholder="المادة الفعالة">
-        <input name="strength" placeholder="التركيز — مثال 500 mg">
-        <select name="form">
-          <option>أقراص</option>
-          <option>كبسولات</option>
-          <option>شراب</option>
-          <option>أمبول</option>
-          <option>كريم</option>
-          <option>أخرى</option>
-        </select>
-        <input name="manufacturer" placeholder="الشركة المصنعة">
-        <input name="appearance" placeholder="وصف الشكل واللون والعبوة">
-        <textarea name="notes" placeholder="ملاحظات إضافية"></textarea>
-        <div class="modal-actions">
-          <button class="primary" type="submit">إضافة إلى قاعدة البيانات</button>
-          <button type="button" id="cancelModalBtn" class="ghost">إلغاء</button>
-        </div>
-      </form>
-    </div>
   </div>
 
   <script src="app.js"></script>
