@@ -1,17 +1,10 @@
-const seedMedicines=[
-{id:1,name:"باراسيتامول 500",ingredient:"Paracetamol",strength:"500 mg",form:"أقراص",manufacturer:"Demo Pharma",appearance:"شريط أبيض، أقراص بيضاء مستديرة",notes:"بيان دوائي مرفق"},
-{id:2,name:"أموكسيسيلين 500",ingredient:"Amoxicillin",strength:"500 mg",form:"كبسولات",manufacturer:"Demo Pharma",appearance:"كبسولات زرقاء/بيضاء، شريط فضي",notes:""},
-{id:3,name:"أملوديبين 5",ingredient:"Amlodipine",strength:"5 mg",form:"أقراص",manufacturer:"Demo Pharma",appearance:"أقراص بيضاء صغيرة، شريط فضي",notes:"بيان دوائي مرفق"},
-{id:4,name:"أوميبرازول 20",ingredient:"Omeprazole",strength:"20 mg",form:"كبسولات",manufacturer:"Demo Pharma",appearance:"كبسولات حمراء/بيضاء، عبوة كرتون",notes:""},
-{id:5,name:"ديكلوفيناك 50",ingredient:"Diclofenac",strength:"50 mg",form:"أقراص",manufacturer:"Demo Pharma",appearance:"أقراص بنية فاتحة، شريط فضي",notes:"بيان دوائي مرفق"},
-];
-
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
 const normalize=s=>(s||"").toLowerCase().trim().replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/[ًٌٍَُِّْ]/g,"");
-const stored=JSON.parse(localStorage.getItem("pharmaMedicines")||"[]");
-let medicines=[...seedMedicines,...stored];
+
+let medicines=[];
 let recent=JSON.parse(localStorage.getItem("pharmaRecent")||"[]");
+let sheetUrl=localStorage.getItem("pharmaSheetUrl")||"";
 
 // ========== Modal Functions ==========
 function openModal(){
@@ -26,16 +19,125 @@ function closeModal(){
   $("#medicineForm").reset();
 }
 
-// ========== Event listeners for modal ==========
+function openSettings(){
+  $("#settingsModal").hidden=false;
+  document.body.style.overflow="hidden";
+  $("#sheetUrl").value=sheetUrl;
+  $("#sheetStatus").textContent="";
+}
+
+function closeSettings(){
+  $("#settingsModal").hidden=true;
+  document.body.style.overflow="auto";
+}
+
+// ========== Event listeners for modals ==========
 $("#addMedicineBtn").onclick=openModal;
 $("#closeModalBtn").onclick=closeModal;
 $("#cancelModalBtn").onclick=closeModal;
 $("#medicineModal").querySelector(".modal-overlay").onclick=closeModal;
 
-// Close modal on Escape key
+$("#settingsBtn").onclick=openSettings;
+$("#closeSettingsBtn").onclick=closeSettings;
+$("#settingsModal").querySelector(".modal-overlay").onclick=closeSettings;
+
+// Close modals on Escape key
 document.addEventListener("keydown",e=>{
-  if(e.key==="Escape"&&!$("#medicineModal").hidden)closeModal();
+  if(e.key==="Escape"){
+    if(!$("#medicineModal").hidden)closeModal();
+    if(!$("#settingsModal").hidden)closeSettings();
+  }
 });
+
+// ========== Google Sheets Integration ==========
+function getSheetId(url){
+  const match=url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  return match?match[1]:null;
+}
+
+function getSheetApiUrl(sheetId){
+  return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/query?tqx=out:json`;
+}
+
+async function loadFromGoogleSheets(){
+  const url=$("#sheetUrl").value.trim();
+  if(!url){
+    $("#sheetStatus").textContent="❌ الرجاء إدخال رابط الشيت";
+    return;
+  }
+
+  const sheetId=getSheetId(url);
+  if(!sheetId){
+    $("#sheetStatus").textContent="❌ رابط غير صحيح. تأكد من رابط جوجل شيتس";
+    return;
+  }
+
+  $("#sheetStatus").textContent="⏳ جاري التحميل...";
+  
+  try{
+    const apiUrl=getSheetApiUrl(sheetId);
+    const response=await fetch(apiUrl);
+    const text=await response.text();
+    
+    // Parse Google Sheets response
+    const jsonStart=text.indexOf("{");
+    const jsonEnd=text.lastIndexOf("}")+1;
+    const json=JSON.parse(text.substring(jsonStart,jsonEnd));
+    
+    if(!json.table||!json.table.rows){
+      $("#sheetStatus").textContent="❌ لا توجد بيانات في الشيت";
+      return;
+    }
+
+    medicines=[];
+    const rows=json.table.rows;
+    const cols=json.table.cols;
+
+    // Get column indices
+    let nameIdx=-1,ingredientIdx=-1,strengthIdx=-1,formIdx=-1,manufacturerIdx=-1,appearanceIdx=-1,notesIdx=-1;
+    
+    if(json.table.cols){
+      json.table.cols.forEach((col,i)=>{
+        const label=col.label?col.label.toLowerCase():"";
+        if(label.includes("اسم"))nameIdx=i;
+        if(label.includes("مادة"))ingredientIdx=i;
+        if(label.includes("تركيز"))strengthIdx=i;
+        if(label.includes("شكل"))formIdx=i;
+        if(label.includes("شركة"))manufacturerIdx=i;
+        if(label.includes("وصف"))appearanceIdx=i;
+        if(label.includes("ملاحظة"))notesIdx=i;
+      });
+    }
+
+    // Parse rows
+    rows.forEach((row,idx)=>{
+      if(idx===0)return; // Skip header
+      const item={
+        id:Date.now()+idx,
+        name:row.c[nameIdx]?row.c[nameIdx].v:"",
+        ingredient:row.c[ingredientIdx]?row.c[ingredientIdx].v:"",
+        strength:row.c[strengthIdx]?row.c[strengthIdx].v:"",
+        form:row.c[formIdx]?row.c[formIdx].v:"",
+        manufacturer:row.c[manufacturerIdx]?row.c[manufacturerIdx].v:"",
+        appearance:row.c[appearanceIdx]?row.c[appearanceIdx].v:"",
+        notes:row.c[notesIdx]?row.c[notesIdx].v:""
+      };
+      if(item.name)medicines.push(item);
+    });
+
+    localStorage.setItem("pharmaSheetUrl",url);
+    sheetUrl=url;
+    $("#sheetStatus").textContent=`✓ تم تحميل ${medicines.length} دواء بنجاح`;
+    setTimeout(closeSettings,1500);
+    updateStats();
+    renderResults(medicines.map(m=>({...m,_score:0})));
+  }catch(e){
+    console.error(e);
+    $("#sheetStatus").textContent="❌ خطأ في تحميل البيانات. تأكد من إعدادات المشاركة";
+  }
+}
+
+$("#loadSheetBtn").onclick=loadFromGoogleSheets;
 
 // ========== Search Logic ==========
 function score(m,q){
@@ -69,7 +171,7 @@ function renderResults(items,q=""){
  <div class="meta"><span class="pill">${escapeHtml(m.ingredient)}</span><span class="pill">${escapeHtml(m.strength||"غير محدد")}</span><span class="pill">${escapeHtml(m.form)}</span></div>
  <p><strong>الشكل:</strong> ${escapeHtml(m.appearance||"غير موصوف")}</p>
  <p><strong>الشركة:</strong> ${escapeHtml(m.manufacturer||"غير محددة")}</p>
- <div class="match">درجة تطابق وصف البحث: <span class="confidence">${m._score}%</span></div>
+ ${m._score?'<div class="match">درجة تطابق وصف البحث: <span class="confidence">'+m._score+'%</span></div>':''}
  <small>${escapeHtml(m.notes||"")}</small>
  </article>`).join("");
 }
@@ -100,10 +202,7 @@ $("#medicineForm").onsubmit=e=>{
  e.preventDefault();
  const data=Object.fromEntries(new FormData(e.target).entries());
  const item={id:Date.now(),...data};
- const custom=JSON.parse(localStorage.getItem("pharmaMedicines")||"[]");
- custom.push(item);
- localStorage.setItem("pharmaMedicines",JSON.stringify(custom));
- medicines=[...seedMedicines,...custom];
+ medicines.push(item);
  closeModal();
  updateStats();
  search("");
@@ -111,11 +210,11 @@ $("#medicineForm").onsubmit=e=>{
 };
 
 // ========== Initialize ==========
-renderResults(medicines.map(m=>({...m,_score:0})));
+renderResults([]);
 renderRecent();
-updateStats(medicines.length);
+updateStats();
 
-// ========== PWA install button ==========
-let deferredPrompt;
-window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;$("#installBtn").hidden=false});
-$("#installBtn").onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();deferredPrompt=null;$("#installBtn").hidden=true};
+// Auto-load sheet if URL saved
+if(sheetUrl){
+  $("#sheetUrl").value=sheetUrl;
+}
