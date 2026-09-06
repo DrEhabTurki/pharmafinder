@@ -32,6 +32,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex: 1;
 }
 
 .logo-icon {
@@ -79,6 +80,7 @@ body {
   justify-content: center;
   transition: all 0.3s ease;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 .icon-btn:hover {
@@ -575,6 +577,7 @@ main {
   .logo-section {
     width: 100%;
     justify-content: center;
+    flex: none;
   }
 
   .topbar h1 {
